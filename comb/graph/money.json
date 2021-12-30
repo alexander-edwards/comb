@@ -1,0 +1,31 @@
+{
+    "metadata": {
+        "name": "money",
+        "id": "money"
+    },
+    "content": {
+        "hash-1": {
+            "content": "Spend [[Money]]",
+            "metadata": {
+                "indent": 1,
+                "parent": "hash-1",
+                "id": "meditations",
+                "noteId": "meditations",
+                "referencedNotes": [
+                    "money"
+                ]
+            }
+        },
+        "hash-2": {
+            "content": "Especially for [[Education]]",
+            "metadata": {
+                "indent": 2,
+                "parent": "hash-1",
+                "note-id": "meditations",
+                "referencedNotes": [
+                    "education"
+                ]
+            }
+        }
+    }
+}

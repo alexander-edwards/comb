@@ -1,0 +1,9 @@
+Block creation: 
+
+In N1, Write block B1 referencing note N2. 
+If N2 does not exist, create N2
+Append B1 to N2. 
+
+Block editing: 
+Make edits 
+Go to 

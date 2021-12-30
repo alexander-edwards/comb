@@ -1,0 +1,16 @@
+{
+    "metadata": {
+        "name": "education",
+        "id": "education"
+    },
+    "content": {
+        "hash-2": {
+            "content": "Especially for [[Education]]",
+            "metadata": {
+                "indent": 1,
+                "parent": "hash-1",
+                "note-id": "meditations"
+            }
+        }
+    }
+}
