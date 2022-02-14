@@ -1,29 +1,32 @@
 import React, { useState } from 'react';
-import { EditorState, ContentState, ContentBlock, convertToRaw, genKey, CharacterMetadata } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
+import { EditorState, ContentState, ContentBlock, genKey, CharacterMetadata } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import DOMPurify from 'dompurify';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import './App.css';
+
 import { List, Repeat } from 'immutable'
 
-import { getNotes } from './controller'
+import './App.css';
+import { NoteEditor, SaveNotesButton } from './Editor';
+import { getNotes, saveNotes } from './controller'
+import { blockMapToNotes } from './utils';
 
 const App = () => {
 
   const notes = getNotes('meditations');
-  console.log(notes);
-
-  const input = [''];
-
-  const contentBlocks = input.map(word => {
-    return new ContentBlock({
-      key: genKey(),
-      type: 'unordered-list-item',
-      characterList: new List(Repeat(CharacterMetadata.create(), word.length)),
-      text: word
-    });
-  });
+  let contentBlocks = [];
+  for (let noteHash in notes.content) {
+    let note = notes.content[noteHash];
+    contentBlocks.push(
+      new ContentBlock({
+        key: noteHash,
+        type: 'unordered-list-item',
+        characterList: new List(Repeat(CharacterMetadata.create(), note.text.length)),
+        text: note.text,
+        depth: note.metadata.depth
+      })
+    )
+  }
 
   const [editorState, setEditorState] = useState(
     () => EditorState.createWithContent(ContentState.createFromBlockArray(contentBlocks))
@@ -34,7 +37,9 @@ const App = () => {
   const handleEditorChange = (state) => {
     setEditorState(state);
     convertContentToHTML();
+    let notes = blockMapToNotes(editorState);
   }
+
 
   const convertContentToHTML = () => {
     let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
@@ -47,26 +52,20 @@ const App = () => {
     }
   }
 
+
   return (
     <div className="App">
       <header className="App-header">
         Comb
       </header>
-      <Editor
-        defaultEditorState={editorState}
-        onEditorStateChange={handleEditorChange}
-        wrapperClassName="wrapper-class"
-        editorClassName="editor-class"
-        toolbarClassName="toolbar-class"
+      <SaveNotesButton
+        editorState={editorState}
       />
-      <Editor
-        defaultEditorState={editorState}
-        onEditorStateChange={handleEditorChange}
-        wrapperClassName="wrapper-class"
-        editorClassName="editor-class"
-        toolbarClassName="toolbar-class"
+      <NoteEditor
+        editorState={editorState}
+        handleEditorChange={handleEditorChange}
       />
-      {/* <div className="preview" dangerouslySetInnerHTML={createMarkup(convertedContent)}></div> */}
+      <div className="preview" dangerouslySetInnerHTML={createMarkup(convertedContent)}></div>
     </div>
   )
 }

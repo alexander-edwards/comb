@@ -6,9 +6,9 @@ const meditationsNotes = {
     },
     "content": {
         "hash-1": {
-            "content": "Spend [[Money]]",
+            "text": "Spend [[Money]]",
             "metadata": {
-                "indent": 1,
+                "depth": 0,
                 "parent": "hash-1",
                 "id": "meditations",
                 "noteId": "meditations",
@@ -18,9 +18,9 @@ const meditationsNotes = {
             }
         },
         "hash-2": {
-            "content": "Especially for [[Education]]",
+            "text": "Especially for [[Education]]",
             "metadata": {
-                "indent": 2,
+                "depth": 1,
                 "parent": "hash-1",
                 "note-id": "meditations",
                 "referencedNotes": [
@@ -33,7 +33,8 @@ const meditationsNotes = {
 
 export function getNotes(noteName) {
     let rawNotes = getRawNotes(noteName);
-    return parseRawNotes(rawNotes);
+    let parsedNotes = parseRawNotes(rawNotes);
+    return getNotesBlocks(parsedNotes)
 }
 
 function parseRawNotes(rawNotes) {
@@ -41,9 +42,27 @@ function parseRawNotes(rawNotes) {
 }
 
 function getRawNotes(noteName) {
-    if (noteName === 'meditations') {
-        return meditationsNotes;
-    }
+    if (noteName === 'meditations') { return meditationsNotes }
     return {}
 }
 
+function getNotesBlocks(notes) {
+    return notes;
+}
+
+export function saveNotes(notes) {
+
+    console.log(notes);
+    let timestamp = Date.now().toLocaleString();
+    let fileName = notes.metadata.id + timestamp;
+
+    function download(content, fileName, contentType) {
+        var a = document.createElement("a");
+        var file = new Blob([content], { type: contentType });
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
+    }
+    download(JSON.stringify(notes), fileName + ".txt", 'text/plain');
+
+}
